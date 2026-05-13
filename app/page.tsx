@@ -1,0 +1,194 @@
+"use client";
+import { useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Hero } from "@/components/hero";
+import { GeneratorForm } from "@/components/generator-form";
+import { LoadingScreen } from "@/components/loading-screen";
+import { ResultView } from "@/components/result-view";
+import { MarkdownRender } from "@/components/markdown-render";
+import type { GenerateInput } from "@/lib/types";
+
+type Phase = "landing" | "form" | "loading" | "streaming" | "result" | "error";
+
+export default function Home() {
+  const [phase, setPhase] = useState<Phase>("landing");
+  const [markdown, setMarkdown] = useState("");
+  const [input, setInput] = useState<GenerateInput | null>(null);
+  const [error, setError] = useState("");
+  const formAreaRef = useRef<HTMLDivElement | null>(null);
+
+  const start = () => {
+    setPhase("form");
+    requestAnimationFrame(() =>
+      formAreaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    );
+  };
+
+  const onSubmit = async (data: GenerateInput) => {
+    setInput(data);
+    setMarkdown("");
+    setError("");
+    setPhase("loading");
+
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok || !res.body) {
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(j.error || `Request failed (${res.status})`);
+      }
+
+      setPhase("streaming");
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        setMarkdown(buf);
+      }
+      setPhase("result");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Generation failed.");
+      setPhase("error");
+    }
+  };
+
+  const reset = () => {
+    setMarkdown("");
+    setInput(null);
+    setError("");
+    setPhase("landing");
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
+  };
+
+  return (
+    <main className="min-h-screen">
+      <header className="px-4 py-5 md:px-8 md:py-6 flex items-center justify-between">
+        <button
+          onClick={reset}
+          className="flex items-center gap-2 group"
+          aria-label="Home"
+        >
+          <div className="w-8 h-8 rounded-xl gradient-bg grid place-items-center">
+            <span className="text-white text-sm font-bold">L</span>
+          </div>
+          <span className="font-display font-bold text-lg group-hover:opacity-80 transition-opacity">
+            Lead Magnet Generator
+          </span>
+        </button>
+        <a
+          href="https://github.com/evolvebryan2025/lead-magnet-generator"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden sm:inline-flex text-xs font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+        >
+          GitHub →
+        </a>
+      </header>
+
+      <AnimatePresence mode="wait">
+        {phase === "landing" && (
+          <motion.div
+            key="landing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Hero onStart={start} />
+          </motion.div>
+        )}
+
+        {phase === "form" && (
+          <motion.div
+            key="form"
+            ref={formAreaRef}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <GeneratorForm onSubmit={onSubmit} />
+          </motion.div>
+        )}
+
+        {phase === "loading" && (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <LoadingScreen />
+          </motion.div>
+        )}
+
+        {phase === "streaming" && (
+          <motion.div
+            key="streaming"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="max-w-3xl mx-auto px-4 py-6 md:py-10"
+          >
+            <div className="text-xs font-medium text-[var(--color-accent-cyan)] mb-4 flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-[var(--color-accent-cyan)] animate-pulse" />
+              Writing live…
+            </div>
+            <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-3xl p-6 md:p-10">
+              <MarkdownRender markdown={markdown} />
+            </div>
+          </motion.div>
+        )}
+
+        {phase === "result" && input && (
+          <motion.div
+            key="result"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <ResultView
+              markdown={markdown}
+              format={input.format}
+              brandName={input.brandName || undefined}
+              primaryColor={input.primaryColor || undefined}
+              onReset={reset}
+            />
+          </motion.div>
+        )}
+
+        {phase === "error" && (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-xl mx-auto px-4 py-20 text-center"
+          >
+            <div className="bg-[var(--color-bg-card)] border border-red-500/30 rounded-3xl p-8">
+              <h2 className="text-xl font-bold mb-3">Something went wrong</h2>
+              <p className="text-sm text-[var(--color-text-muted)] mb-6">{error}</p>
+              <button
+                onClick={() => setPhase("form")}
+                className="gradient-bg text-white font-semibold px-6 py-3 rounded-xl text-sm"
+              >
+                Try again
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <footer className="px-4 py-10 mt-10 text-center text-xs text-[var(--color-text-dim)]">
+        Built with Next.js · Powered by Claude · Deployed on Vercel
+      </footer>
+    </main>
+  );
+}
