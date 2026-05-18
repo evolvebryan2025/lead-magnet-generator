@@ -1,117 +1,93 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
 const DOCS = [
-  { id: 1, x: "8%", y: "18%", rotate: -14, scale: 0.85, color: "from-cyan-400/30 to-blue-500/20", title: "Guide", lines: 5 },
-  { id: 2, x: "82%", y: "12%", rotate: 12, scale: 0.95, color: "from-violet-500/30 to-purple-500/20", title: "Checklist", lines: 6 },
-  { id: 3, x: "12%", y: "70%", rotate: 8, scale: 0.9, color: "from-orange-400/30 to-pink-500/20", title: "Email", lines: 4 },
-  { id: 4, x: "78%", y: "68%", rotate: -10, scale: 0.85, color: "from-blue-500/30 to-cyan-400/20", title: "Template", lines: 5 },
-  { id: 5, x: "45%", y: "8%", rotate: -4, scale: 0.7, color: "from-purple-500/25 to-violet-400/15", title: "Cheat Sheet", lines: 3 },
+  { id: 1, x: "5%", y: "16%", rotate: -12, scale: 0.78, color: "from-cyan-500/14 to-blue-600/8", title: "Guide", lines: 5 },
+  { id: 2, x: "85%", y: "14%", rotate: 10, scale: 0.85, color: "from-purple-500/14 to-violet-700/8", title: "Checklist", lines: 6 },
+  { id: 3, x: "8%", y: "74%", rotate: 6, scale: 0.8, color: "from-pink-500/14 to-purple-700/8", title: "Email", lines: 4 },
+  { id: 4, x: "82%", y: "72%", rotate: -8, scale: 0.78, color: "from-blue-500/14 to-cyan-700/8", title: "Template", lines: 5 },
 ];
 
 export function AnimatedBackground() {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-  const springX = useSpring(mouseX, { stiffness: 60, damping: 20 });
-  const springY = useSpring(mouseY, { stiffness: 60, damping: 20 });
-
-  useEffect(() => {
-    let raf = 0;
-    const handler = (e: MouseEvent) => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 2;
-        const y = (e.clientY / window.innerHeight - 0.5) * 2;
-        mouseX.set(x);
-        mouseY.set(y);
-      });
-    };
-    window.addEventListener("pointermove", handler, { passive: true });
-    return () => {
-      window.removeEventListener("pointermove", handler);
-      cancelAnimationFrame(raf);
-    };
-  }, [mouseX, mouseY]);
-
   return (
     <div
-      ref={containerRef}
       aria-hidden
       className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
     >
-      {/* Animated mesh gradient blobs */}
+      {/* Slow-shifting mesh gradient blobs */}
       <div
-        className="absolute -top-1/3 -left-1/3 w-[80vw] h-[80vw] rounded-full opacity-50 blur-3xl"
+        className="absolute -top-1/3 -left-1/4 w-[70vw] h-[70vw] rounded-full opacity-40 blur-3xl"
         style={{
           background:
-            "radial-gradient(circle, rgba(34,211,238,0.35), rgba(34,211,238,0) 60%)",
-          animation: "mesh-shift 22s ease-in-out infinite",
+            "radial-gradient(circle, rgba(0,229,255,0.32), rgba(0,229,255,0) 60%)",
+          animation: "mesh-shift 30s ease-in-out infinite",
         }}
       />
       <div
-        className="absolute -top-1/4 -right-1/4 w-[70vw] h-[70vw] rounded-full opacity-40 blur-3xl"
+        className="absolute -top-1/4 -right-1/4 w-[65vw] h-[65vw] rounded-full opacity-35 blur-3xl"
         style={{
           background:
-            "radial-gradient(circle, rgba(168,85,247,0.30), rgba(168,85,247,0) 60%)",
-          animation: "mesh-shift 28s ease-in-out infinite -8s",
+            "radial-gradient(circle, rgba(160,32,240,0.32), rgba(160,32,240,0) 60%)",
+          animation: "mesh-shift 38s ease-in-out infinite -12s",
         }}
       />
       <div
-        className="absolute -bottom-1/3 left-1/4 w-[70vw] h-[70vw] rounded-full opacity-40 blur-3xl"
+        className="absolute -bottom-1/3 left-1/3 w-[65vw] h-[65vw] rounded-full opacity-30 blur-3xl"
         style={{
           background:
-            "radial-gradient(circle, rgba(251,146,60,0.25), rgba(251,146,60,0) 60%)",
-          animation: "mesh-shift 32s ease-in-out infinite -16s",
+            "radial-gradient(circle, rgba(255,43,177,0.25), rgba(255,43,177,0) 60%)",
+          animation: "mesh-shift 42s ease-in-out infinite -20s",
+        }}
+      />
+
+      {/* Tech grid */}
+      <div
+        className="absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,229,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.5) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
         }}
       />
 
       {/* Dot grid */}
       <div
-        className="absolute inset-0 opacity-[0.07]"
+        className="absolute inset-0 opacity-[0.05]"
         style={{
           backgroundImage:
-            "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+            "radial-gradient(circle, #00e5ff 1px, transparent 1px)",
           backgroundSize: "32px 32px",
         }}
       />
 
-      {/* Floating document cards */}
+      {/* Floating document cards — gentle drift only, NO mouse tracking */}
       {DOCS.map((doc, i) => (
-        <FloatingDoc
-          key={doc.id}
-          doc={doc}
-          springX={springX}
-          springY={springY}
-          delayIdx={i}
-        />
+        <FloatingDoc key={doc.id} doc={doc} delayIdx={i} />
       ))}
 
-      {/* Center magnetic field — only visible from large screens */}
+      {/* Center magnetic pulse (desktop only, very subtle) */}
       <div
-        className="hidden lg:block absolute left-1/2 top-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-        style={{ opacity: 0.35 }}
+        className="hidden lg:block absolute left-1/2 top-1/2 w-[420px] h-[420px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+        style={{ opacity: 0.2 }}
       >
-        {[0, 1, 2, 3].map((i) => (
+        {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className="absolute inset-0 rounded-full border border-cyan-400/30"
+            className="absolute inset-0 rounded-full border border-cyan-400/40"
             style={{
-              animation: `magnetic-pulse 3.5s ease-out infinite`,
-              animationDelay: `${i * 0.9}s`,
+              animation: `magnetic-pulse 4s ease-out infinite`,
+              animationDelay: `${i * 1.2}s`,
             }}
           />
         ))}
       </div>
 
-      {/* Vignette */}
+      {/* Strong vignette to darken edges + center for text legibility */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at center, transparent 0%, rgba(6,8,21,0.6) 80%, rgba(6,8,21,0.95) 100%)",
+            "radial-gradient(ellipse at center, rgba(2,3,12,0.4) 0%, rgba(2,3,12,0.75) 75%, rgba(2,3,12,0.95) 100%)",
         }}
       />
     </div>
@@ -120,53 +96,42 @@ export function AnimatedBackground() {
 
 function FloatingDoc({
   doc,
-  springX,
-  springY,
   delayIdx,
 }: {
   doc: (typeof DOCS)[number];
-  springX: ReturnType<typeof useSpring>;
-  springY: ReturnType<typeof useSpring>;
   delayIdx: number;
 }) {
-  const parallaxStrength = 14 + delayIdx * 3;
-  const x = useTransform(springX, (v) => v * parallaxStrength);
-  const y = useTransform(springY, (v) => v * parallaxStrength);
-
   return (
     <motion.div
-      className="absolute hidden md:block"
+      className="absolute hidden lg:block"
       style={{
         left: doc.x,
         top: doc.y,
-        x,
-        y,
         transform: `rotate(${doc.rotate}deg) scale(${doc.scale})`,
       }}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1.2, delay: delayIdx * 0.15, ease: "easeOut" }}
+      transition={{ duration: 1.4, delay: delayIdx * 0.2, ease: "easeOut" }}
     >
       <div
-        className={`relative w-44 h-56 rounded-xl bg-gradient-to-br ${doc.color} backdrop-blur-sm border border-white/10 p-4 shadow-2xl`}
+        className={`relative w-40 h-52 rounded-xl bg-gradient-to-br ${doc.color} backdrop-blur-sm border border-white/5 p-4 shadow-2xl`}
         style={{
-          animation: `drift 8s ease-in-out infinite`,
-          animationDelay: `${delayIdx * 0.7}s`,
+          animation: `drift-slow 12s ease-in-out infinite`,
+          animationDelay: `${delayIdx * 1.2}s`,
         }}
       >
-        <div className="text-[10px] uppercase tracking-widest text-white/40 mb-3 font-semibold">
+        <div className="text-[9px] uppercase tracking-widest text-white/30 mb-3 font-semibold">
           {doc.title}
         </div>
         <div className="space-y-1.5">
           {Array.from({ length: doc.lines }).map((_, i) => (
             <div
               key={i}
-              className="h-1.5 rounded-full bg-white/15"
+              className="h-1.5 rounded-full bg-white/8"
               style={{ width: `${65 + ((i * 13) % 30)}%` }}
             />
           ))}
         </div>
-        <div className="absolute bottom-3 right-3 w-6 h-6 rounded-md bg-white/10" />
       </div>
     </motion.div>
   );

@@ -13,13 +13,13 @@ const STEPS = [
     icon: Sparkles,
     title: "Generate",
     body: "Pick a format and tone. Watch GPT-4o write the magnet live, section by section.",
-    accent: "from-blue-500 to-violet-500",
+    accent: "from-blue-500 to-purple-600",
   },
   {
     icon: Download,
     title: "Download",
-    body: "Edit anything you want, pick a PDF theme, and grab the file — or email it to yourself.",
-    accent: "from-violet-500 to-orange-400",
+    body: "Edit anything, pick a PDF theme, and grab the file — or email it to yourself.",
+    accent: "from-purple-600 to-pink-500",
   },
 ];
 
@@ -34,17 +34,16 @@ export function HowItWorks() {
           transition={{ duration: 0.5 }}
           className="text-center mb-14"
         >
-          <div className="text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-cyan)] mb-3">
+          <div className="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-cyan)] mb-3">
             How it works
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white">
             From <span className="gradient-text">blank page</span> to PDF
             <br className="hidden md:block" /> in three moves.
           </h2>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 relative">
-          {/* Connecting line */}
           <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-px bg-gradient-to-r from-transparent via-[var(--color-border-strong)] to-transparent" />
 
           {STEPS.map((step, i) => (
@@ -57,14 +56,14 @@ export function HowItWorks() {
               className="gradient-border-card rounded-3xl p-6 md:p-8 text-center relative"
             >
               <div
-                className={`w-14 h-14 mx-auto mb-5 rounded-2xl bg-gradient-to-br ${step.accent} grid place-items-center shadow-lg`}
+                className={`w-14 h-14 mx-auto mb-5 rounded-2xl bg-gradient-to-br ${step.accent} grid place-items-center shadow-[0_0_30px_rgba(0,229,255,0.25)]`}
               >
                 <step.icon className="w-6 h-6 text-white" />
               </div>
-              <div className="text-[10px] uppercase tracking-widest text-[var(--color-text-dim)] mb-1.5">
+              <div className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)] mb-1.5 font-bold">
                 Step {i + 1}
               </div>
-              <h3 className="text-xl font-bold mb-2.5">{step.title}</h3>
+              <h3 className="text-xl font-bold mb-2.5 text-white">{step.title}</h3>
               <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
                 {step.body}
               </p>

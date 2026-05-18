@@ -11,7 +11,7 @@ export function Hero({ onStart }: { onStart: () => void }) {
   useEffect(() => {
     const id = setInterval(() => {
       setWordIdx((i) => (i + 1) % ROTATING_WORDS.length);
-    }, 2400);
+    }, 2600);
     return () => clearInterval(id);
   }, []);
 
@@ -28,34 +28,46 @@ export function Hero({ onStart }: { onStart: () => void }) {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
           </span>
-          <span className="text-xs font-medium text-white/80">
+          <span className="text-xs font-semibold text-white/90">
             Powered by GPT-4o · Free · No signup
           </span>
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.05 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.02] mb-6 tracking-tight"
-        >
-          Generate a complete{" "}
-          <span className="relative inline-block min-w-[180px] sm:min-w-[260px] md:min-w-[360px] lg:min-w-[480px] text-left align-baseline">
-            <span className="gradient-text inline-block">
-              <RotatingWord word={ROTATING_WORDS[wordIdx]} />
+        <div className="relative">
+          {/* Backdrop scrim to ensure text legibility over animated background */}
+          <div
+            aria-hidden
+            className="absolute -inset-x-4 -inset-y-4 md:-inset-x-12 md:-inset-y-8 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, rgba(2,3,12,0.85) 0%, rgba(2,3,12,0.5) 60%, transparent 100%)",
+              filter: "blur(8px)",
+            }}
+          />
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.05 }}
+            className="relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.02] mb-6 tracking-tight text-white"
+          >
+            Generate a complete{" "}
+            <span className="relative inline-block min-w-[180px] sm:min-w-[260px] md:min-w-[360px] lg:min-w-[480px] text-left align-baseline">
+              <span className="gradient-text inline-block">
+                <RotatingWord word={ROTATING_WORDS[wordIdx]} />
+              </span>
             </span>
-          </span>
-          <br className="hidden sm:block" /> in under 60 seconds.
-        </motion.h1>
+            <br className="hidden sm:block" /> in under 60 seconds.
+          </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="text-base md:text-lg lg:text-xl text-[var(--color-text-muted)] max-w-2xl mx-auto mb-10 leading-relaxed"
-        >
-          Describe your audience, pick a format, and watch a publish-ready lead magnet write itself. Download as branded PDF or Markdown.
-        </motion.p>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="relative text-base md:text-lg lg:text-xl text-[var(--color-text-muted)] max-w-2xl mx-auto mb-10 leading-relaxed"
+          >
+            Describe your audience, pick a format, and watch a publish-ready lead magnet write itself. Download as branded PDF or Markdown.
+          </motion.p>
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -65,7 +77,7 @@ export function Hero({ onStart }: { onStart: () => void }) {
         >
           <button
             onClick={onStart}
-            className="gradient-bg text-white font-semibold px-8 py-4 rounded-2xl text-base md:text-lg shadow-2xl shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-[1.03] active:scale-[0.98] transition-all inline-flex items-center gap-2.5 focus-ring"
+            className="gradient-bg text-white font-semibold px-8 py-4 rounded-2xl text-base md:text-lg shadow-[0_0_40px_rgba(0,229,255,0.4)] hover:shadow-[0_0_60px_rgba(0,229,255,0.7)] hover:scale-[1.03] active:scale-[0.98] transition-all inline-flex items-center gap-2.5 focus-ring"
           >
             <Zap className="w-5 h-5" />
             Generate Free Lead Magnet
@@ -73,7 +85,7 @@ export function Hero({ onStart }: { onStart: () => void }) {
           </button>
           <a
             href="#examples"
-            className="glass text-white/90 font-medium px-6 py-4 rounded-2xl text-base hover:bg-white/10 transition-all inline-flex items-center gap-2 focus-ring"
+            className="glass text-white/95 font-medium px-6 py-4 rounded-2xl text-base hover:bg-white/10 transition-all inline-flex items-center gap-2 focus-ring"
           >
             <Play className="w-4 h-4" />
             See examples
@@ -96,10 +108,10 @@ export function Hero({ onStart }: { onStart: () => void }) {
               <div className="text-2xl md:text-3xl font-bold gradient-text font-display">
                 {s.value}
               </div>
-              <div className="text-[10px] uppercase tracking-widest text-[var(--color-text-dim)] mt-1.5">
+              <div className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)] mt-1.5 font-semibold">
                 {s.label}
               </div>
-              <div className="text-xs text-[var(--color-text-muted)] mt-0.5 hidden sm:block">
+              <div className="text-xs text-[var(--color-text-dim)] mt-0.5 hidden sm:block">
                 {s.sub}
               </div>
             </div>
