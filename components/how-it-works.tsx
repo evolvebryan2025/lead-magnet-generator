@@ -25,21 +25,29 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section className="relative py-16 md:py-24 px-4">
+    <section className="relative py-14 sm:py-16 md:py-24 px-4">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-14"
+          className="text-center mb-10 sm:mb-14"
         >
-          <div className="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-cyan)] mb-3">
+          <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-accent-cyan)] mb-3">
             How it works
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white">
-            From <span className="gradient-text">blank page</span> to PDF
-            <br className="hidden md:block" /> in three moves.
+          <h2 className="font-bold text-white leading-[1.1]">
+            <span className="block text-[28px] sm:text-4xl lg:text-5xl">
+              From{" "}
+              <span className="highlight-bar">
+                <span className="gradient-text">blank page</span>
+              </span>{" "}
+              to PDF
+            </span>
+            <span className="block text-[24px] sm:text-4xl lg:text-5xl mt-1 sm:mt-2 text-[var(--color-text-muted)]">
+              in three moves.
+            </span>
           </h2>
         </motion.div>
 
@@ -63,7 +71,7 @@ export function HowItWorks() {
               <div className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)] mb-1.5 font-bold">
                 Step {i + 1}
               </div>
-              <h3 className="text-xl font-bold mb-2.5 text-white">{step.title}</h3>
+              <h3 className="text-lg sm:text-xl font-bold mb-2.5 text-white">{step.title}</h3>
               <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
                 {step.body}
               </p>

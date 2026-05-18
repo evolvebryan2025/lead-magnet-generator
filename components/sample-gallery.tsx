@@ -68,15 +68,23 @@ export function SampleGallery() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-10 sm:mb-12"
         >
-          <div className="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-magenta)] mb-3">
+          <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-accent-magenta)] mb-3">
             Examples
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white">
-            Real magnets, <span className="gradient-text">real ICPs</span>.
+          <h2 className="font-bold text-white mb-4 leading-[1.1]">
+            <span className="block text-[28px] sm:text-4xl lg:text-5xl">
+              Real magnets,
+            </span>
+            <span className="block text-[28px] sm:text-4xl lg:text-5xl mt-1 sm:mt-2">
+              <span className="highlight-bar">
+                <span className="gradient-text">real ICPs</span>
+              </span>
+              <span className="text-white">.</span>
+            </span>
           </h2>
-          <p className="text-[var(--color-text-muted)] max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-[var(--color-text-muted)] max-w-md sm:max-w-xl mx-auto px-2 sm:px-0">
             A sample of what the generator produces across the five formats.
           </p>
         </motion.div>

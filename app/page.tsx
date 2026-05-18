@@ -123,11 +123,21 @@ export default function Home() {
               <HowItWorks />
               <SampleGallery />
               <div className="text-center pb-16 px-4">
+                <h3 className="font-bold text-white mb-6 leading-tight">
+                  <span className="block text-2xl sm:text-3xl md:text-4xl">
+                    Ready to make{" "}
+                    <span className="highlight-bar">
+                      <span className="gradient-text">yours</span>
+                    </span>
+                    ?
+                  </span>
+                </h3>
                 <button
                   onClick={start}
-                  className="gradient-bg text-white font-semibold px-8 py-4 rounded-2xl text-base md:text-lg shadow-2xl shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-[1.03] active:scale-[0.98] transition-all"
+                  className="gradient-bg text-white font-semibold px-7 py-3.5 sm:px-8 sm:py-4 rounded-2xl text-base md:text-lg shadow-[0_0_40px_rgba(0,229,255,0.4)] hover:shadow-[0_0_60px_rgba(0,229,255,0.7)] hover:scale-[1.03] active:scale-[0.98] transition-all inline-flex items-center gap-2"
                 >
-                  Start generating →
+                  Start generating
+                  <span aria-hidden>→</span>
                 </button>
               </div>
             </motion.div>
