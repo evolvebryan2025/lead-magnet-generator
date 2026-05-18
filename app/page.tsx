@@ -1,7 +1,10 @@
 "use client";
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AnimatedBackground } from "@/components/background";
 import { Hero } from "@/components/hero";
+import { HowItWorks } from "@/components/how-it-works";
+import { SampleGallery } from "@/components/sample-gallery";
 import { GeneratorForm } from "@/components/generator-form";
 import { LoadingScreen } from "@/components/loading-screen";
 import { ResultView } from "@/components/result-view";
@@ -24,7 +27,7 @@ export default function Home() {
     );
   };
 
-  const onSubmit = async (data: GenerateInput) => {
+  const runGeneration = async (data: GenerateInput) => {
     setInput(data);
     setMarkdown("");
     setError("");
@@ -68,127 +71,148 @@ export default function Home() {
     requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
   };
 
+  const regenerate = () => {
+    if (input) runGeneration(input);
+  };
+
+  const isResult = phase === "result" || phase === "streaming";
+
   return (
-    <main className="min-h-screen">
-      <header className="px-4 py-5 md:px-8 md:py-6 flex items-center justify-between">
-        <button
-          onClick={reset}
-          className="flex items-center gap-2 group"
-          aria-label="Home"
-        >
-          <div className="w-8 h-8 rounded-xl gradient-bg grid place-items-center">
-            <span className="text-white text-sm font-bold">L</span>
-          </div>
-          <span className="font-display font-bold text-lg group-hover:opacity-80 transition-opacity">
-            Lead Magnet Generator
-          </span>
-        </button>
-        <a
-          href="https://github.com/evolvebryan2025/lead-magnet-generator"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden sm:inline-flex text-xs font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-        >
-          GitHub →
-        </a>
-      </header>
-
-      <AnimatePresence mode="wait">
-        {phase === "landing" && (
-          <motion.div
-            key="landing"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+    <>
+      {!isResult && <AnimatedBackground />}
+      <main className="min-h-screen relative z-10">
+        <header className="px-4 py-5 md:px-8 md:py-6 flex items-center justify-between">
+          <button
+            onClick={reset}
+            className="flex items-center gap-2.5 group focus-ring rounded-xl"
+            aria-label="Home"
           >
-            <Hero onStart={start} />
-          </motion.div>
-        )}
-
-        {phase === "form" && (
-          <motion.div
-            key="form"
-            ref={formAreaRef}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <GeneratorForm onSubmit={onSubmit} />
-          </motion.div>
-        )}
-
-        {phase === "loading" && (
-          <motion.div
-            key="loading"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <LoadingScreen />
-          </motion.div>
-        )}
-
-        {phase === "streaming" && (
-          <motion.div
-            key="streaming"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="max-w-3xl mx-auto px-4 py-6 md:py-10"
-          >
-            <div className="text-xs font-medium text-[var(--color-accent-cyan)] mb-4 flex items-center gap-2">
-              <span className="inline-block w-2 h-2 rounded-full bg-[var(--color-accent-cyan)] animate-pulse" />
-              Writing live…
+            <div className="relative w-9 h-9 rounded-xl gradient-bg grid place-items-center shadow-lg shadow-cyan-500/30">
+              <span className="text-white text-sm font-bold">L</span>
+              <span className="absolute inset-0 rounded-xl border border-white/20" />
             </div>
-            <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-3xl p-6 md:p-10">
-              <MarkdownRender markdown={markdown} />
-            </div>
-          </motion.div>
-        )}
-
-        {phase === "result" && input && (
-          <motion.div
-            key="result"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            <span className="font-display font-bold text-base md:text-lg group-hover:opacity-80 transition-opacity">
+              Lead Magnet Generator
+            </span>
+          </button>
+          <a
+            href="https://github.com/evolvebryan2025/lead-magnet-generator"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex text-xs font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors focus-ring rounded px-2 py-1"
           >
-            <ResultView
-              markdown={markdown}
-              format={input.format}
-              brandName={input.brandName || undefined}
-              primaryColor={input.primaryColor || undefined}
-              onReset={reset}
-            />
-          </motion.div>
-        )}
+            GitHub ↗
+          </a>
+        </header>
 
-        {phase === "error" && (
-          <motion.div
-            key="error"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="max-w-xl mx-auto px-4 py-20 text-center"
-          >
-            <div className="bg-[var(--color-bg-card)] border border-red-500/30 rounded-3xl p-8">
-              <h2 className="text-xl font-bold mb-3">Something went wrong</h2>
-              <p className="text-sm text-[var(--color-text-muted)] mb-6">{error}</p>
-              <button
-                onClick={() => setPhase("form")}
-                className="gradient-bg text-white font-semibold px-6 py-3 rounded-xl text-sm"
-              >
-                Try again
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        <AnimatePresence mode="wait">
+          {phase === "landing" && (
+            <motion.div
+              key="landing"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Hero onStart={start} />
+              <HowItWorks />
+              <SampleGallery />
+              <div className="text-center pb-16 px-4">
+                <button
+                  onClick={start}
+                  className="gradient-bg text-white font-semibold px-8 py-4 rounded-2xl text-base md:text-lg shadow-2xl shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-[1.03] active:scale-[0.98] transition-all"
+                >
+                  Start generating →
+                </button>
+              </div>
+            </motion.div>
+          )}
 
-      <footer className="px-4 py-10 mt-10 text-center text-xs text-[var(--color-text-dim)]">
-        Built with Next.js · Powered by Claude · Deployed on Vercel
-      </footer>
-    </main>
+          {phase === "form" && (
+            <motion.div
+              key="form"
+              ref={formAreaRef}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <GeneratorForm onSubmit={runGeneration} initial={input ?? undefined} />
+            </motion.div>
+          )}
+
+          {phase === "loading" && (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <LoadingScreen />
+            </motion.div>
+          )}
+
+          {phase === "streaming" && (
+            <motion.div
+              key="streaming"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="max-w-3xl mx-auto px-4 py-6 md:py-10"
+            >
+              <div className="text-xs font-semibold text-[var(--color-accent-cyan)] mb-4 flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-[var(--color-accent-cyan)] animate-pulse" />
+                Writing live…
+              </div>
+              <div className="gradient-border-card rounded-3xl p-6 md:p-10">
+                <MarkdownRender markdown={markdown} />
+              </div>
+            </motion.div>
+          )}
+
+          {phase === "result" && input && (
+            <motion.div
+              key="result"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <ResultView
+                markdown={markdown}
+                format={input.format}
+                brandName={input.brandName || undefined}
+                primaryColor={input.primaryColor || undefined}
+                onReset={reset}
+                onRegenerate={regenerate}
+              />
+            </motion.div>
+          )}
+
+          {phase === "error" && (
+            <motion.div
+              key="error"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="max-w-xl mx-auto px-4 py-20 text-center"
+            >
+              <div className="gradient-border-card rounded-3xl p-8">
+                <h2 className="text-xl font-bold mb-3">Something went wrong</h2>
+                <p className="text-sm text-[var(--color-text-muted)] mb-6">{error}</p>
+                <button
+                  onClick={() => setPhase("form")}
+                  className="gradient-bg text-white font-semibold px-6 py-3 rounded-xl text-sm"
+                >
+                  Try again
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <footer className="px-4 py-10 mt-10 text-center text-xs text-[var(--color-text-dim)] relative z-10">
+          Built with Next.js · Powered by OpenAI · Deployed on Vercel
+        </footer>
+      </main>
+    </>
   );
 }
