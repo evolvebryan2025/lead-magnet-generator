@@ -76,27 +76,10 @@ p { color: var(--color-text); }
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter:
-    drop-shadow(0 0 14px rgba(0, 229, 255, 0.45))
-    drop-shadow(0 0 28px rgba(160, 32, 240, 0.3));
-  animation: neon-pulse 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.28));
 }
 
-@keyframes neon-pulse {
-  0%, 100% {
-    filter:
-      drop-shadow(0 0 14px rgba(0, 229, 255, 0.45))
-      drop-shadow(0 0 28px rgba(160, 32, 240, 0.3));
-  }
-  50% {
-    filter:
-      drop-shadow(0 0 22px rgba(0, 229, 255, 0.75))
-      drop-shadow(0 0 44px rgba(160, 32, 240, 0.5))
-      drop-shadow(0 0 60px rgba(255, 43, 177, 0.25));
-  }
-}
-
-/* Highlight bar behind a span — sits under the text like a neon marker */
+/* Highlight bar — rectangular frosted-glass panel behind the word */
 .highlight-bar {
   position: relative;
   display: inline-block;
@@ -105,19 +88,18 @@ p { color: var(--color-text); }
 .highlight-bar::before {
   content: "";
   position: absolute;
-  inset: 0.18em -0.18em 0.05em -0.18em;
+  inset: 0.05em -0.35em;
   background: linear-gradient(
-    100deg,
-    rgba(0, 229, 255, 0.18) 0%,
-    rgba(160, 32, 240, 0.18) 50%,
-    rgba(255, 43, 177, 0.18) 100%
+    135deg,
+    rgba(0, 229, 255, 0.10) 0%,
+    rgba(160, 32, 240, 0.10) 50%,
+    rgba(255, 43, 177, 0.10) 100%
   );
-  border-radius: 6px;
-  transform: skewX(-6deg);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
   z-index: -1;
-  box-shadow:
-    0 0 24px rgba(0, 229, 255, 0.35),
-    0 0 48px rgba(160, 32, 240, 0.25);
 }
 
 .gradient-bg {
