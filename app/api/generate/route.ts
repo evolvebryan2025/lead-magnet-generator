@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { GenerateInputSchema } from "@/lib/types";
 import { SYSTEM_PROMPT, buildUserPrompt } from "@/lib/prompts";
 import { rateLimit } from "@/lib/rate-limit";
@@ -14,11 +14,11 @@ function getClientIp(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return new Response(
       JSON.stringify({
         error:
-          "Server missing ANTHROPIC_API_KEY. Add it in your Vercel project settings or .env.local to enable generation.",
+          "Server missing OPENAI_API_KEY. Add it in your Vercel project settings or .env.local to enable generation.",
       }),
       { status: 503, headers: { "Content-Type": "application/json" } }
     );
@@ -53,41 +53,33 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5";
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
   const userPrompt = buildUserPrompt(parsed.data);
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const response = await anthropic.messages.stream({
+        const completion = await openai.chat.completions.create({
           model,
+          stream: true,
+          temperature: 0.7,
           max_tokens: 4000,
-          system: [
-            {
-              type: "text",
-              text: SYSTEM_PROMPT,
-              cache_control: { type: "ephemeral" },
-            },
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: userPrompt },
           ],
-          messages: [{ role: "user", content: userPrompt }],
         });
 
-        for await (const event of response) {
-          if (
-            event.type === "content_block_delta" &&
-            event.delta.type === "text_delta"
-          ) {
-            controller.enqueue(encoder.encode(event.delta.text));
-          }
+        for await (const chunk of completion) {
+          const delta = chunk.choices[0]?.delta?.content;
+          if (delta) controller.enqueue(encoder.encode(delta));
         }
         controller.close();
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Generation failed.";
-        controller.enqueue(
-          encoder.encode(`\n\n[Error: ${msg}]\n`)
-        );
+        controller.enqueue(encoder.encode(`\n\n[Error: ${msg}]\n`));
         controller.close();
       }
     },
