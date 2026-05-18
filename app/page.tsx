@@ -125,11 +125,7 @@ export default function Home() {
               <div className="text-center pb-16 px-4">
                 <h3 className="font-bold text-white mb-6 leading-tight">
                   <span className="block text-2xl sm:text-3xl md:text-4xl">
-                    Ready to make{" "}
-                    <span className="highlight-bar">
-                      <span className="gradient-text">yours</span>
-                    </span>
-                    ?
+                    Ready to make <span className="gradient-text">yours</span>?
                   </span>
                 </h3>
                 <button

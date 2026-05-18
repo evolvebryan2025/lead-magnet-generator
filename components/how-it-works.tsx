@@ -39,11 +39,7 @@ export function HowItWorks() {
           </div>
           <h2 className="font-bold text-white leading-[1.1]">
             <span className="block text-[28px] sm:text-4xl lg:text-5xl">
-              From{" "}
-              <span className="highlight-bar">
-                <span className="gradient-text">blank page</span>
-              </span>{" "}
-              to PDF
+              From <span className="gradient-text">blank page</span> to PDF
             </span>
             <span className="block text-[24px] sm:text-4xl lg:text-5xl mt-1 sm:mt-2 text-[var(--color-text-muted)]">
               in three moves.

@@ -78,9 +78,7 @@ export function SampleGallery() {
               Real magnets,
             </span>
             <span className="block text-[28px] sm:text-4xl lg:text-5xl mt-1 sm:mt-2">
-              <span className="highlight-bar">
-                <span className="gradient-text">real ICPs</span>
-              </span>
+              <span className="gradient-text">real ICPs</span>
               <span className="text-white">.</span>
             </span>
           </h2>
