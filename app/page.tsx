@@ -80,8 +80,8 @@ export default function Home() {
   return (
     <>
       {!isResult && <AnimatedBackground />}
-      <main className="min-h-screen relative z-10">
-        <header className="px-4 py-5 md:px-8 md:py-6 flex items-center justify-between">
+      <main className="min-h-screen relative z-10" style={{ pointerEvents: "auto" }}>
+        <header className="relative z-20 px-4 py-5 md:px-8 md:py-6 flex items-center justify-between">
           <button
             onClick={reset}
             className="flex items-center gap-2.5 group focus-ring rounded-xl"
@@ -105,6 +105,7 @@ export default function Home() {
           </a>
         </header>
 
+        <div className="relative z-20">
         <AnimatePresence mode="wait">
           {phase === "landing" && (
             <motion.div
@@ -208,8 +209,9 @@ export default function Home() {
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
 
-        <footer className="px-4 py-10 mt-10 text-center text-xs text-[var(--color-text-dim)] relative z-10">
+        <footer className="relative z-20 px-4 py-10 mt-10 text-center text-xs text-[var(--color-text-dim)]">
           Built with Next.js · Powered by OpenAI · Deployed on Vercel
         </footer>
       </main>

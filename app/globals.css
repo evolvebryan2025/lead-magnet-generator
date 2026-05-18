@@ -43,7 +43,7 @@ body {
   position: relative;
 }
 
-/* Subtle scanline + grain layer */
+/* Subtle scanline + grain layer — sits BEHIND content (z: -1) */
 body::after {
   content: "";
   position: fixed;
@@ -57,10 +57,10 @@ body::after {
       transparent 3px
     ),
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.025 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  pointer-events: none;
-  z-index: 1;
+  pointer-events: none !important;
+  z-index: -1;
   mix-blend-mode: overlay;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 h1, h2, h3, h4 {

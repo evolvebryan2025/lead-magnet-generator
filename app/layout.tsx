@@ -30,7 +30,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#0a0e1a",
+  themeColor: "#02030c",
 };
 
 export default function RootLayout({
@@ -38,9 +38,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
-      <body>
-        <div className="relative z-10">{children}</div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
