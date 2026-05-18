@@ -55,13 +55,20 @@ export function Hero({ onStart }: { onStart: () => void }) {
             <span className="block text-[28px] sm:text-5xl md:text-6xl lg:text-7xl">
               Generate a complete
             </span>
-            <span className="block text-[32px] sm:text-5xl md:text-6xl lg:text-7xl mt-1 sm:mt-2 min-h-[1.2em]">
-              <span className="highlight-bar">
-                <span className="gradient-text inline-block">
-                  <AnimatePresence mode="wait">
-                    <RotatingWord key={ROTATING_WORDS[wordIdx]} word={ROTATING_WORDS[wordIdx]} />
-                  </AnimatePresence>
-                </span>
+            <span className="block text-[32px] sm:text-5xl md:text-6xl lg:text-7xl mt-1 sm:mt-2 min-h-[1.2em] leading-[1.15]">
+              <span className="highlight-bar inline-block px-1">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={ROTATING_WORDS[wordIdx]}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -14 }}
+                    transition={{ duration: 0.4 }}
+                    className="inline-block gradient-text"
+                  >
+                    {ROTATING_WORDS[wordIdx]}
+                  </motion.span>
+                </AnimatePresence>
               </span>
             </span>
             <span className="block text-[26px] sm:text-5xl md:text-6xl lg:text-7xl mt-1 sm:mt-2">
@@ -132,16 +139,3 @@ export function Hero({ onStart }: { onStart: () => void }) {
   );
 }
 
-function RotatingWord({ word }: { word: string }) {
-  return (
-    <motion.span
-      initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      exit={{ opacity: 0, y: -20, filter: "blur(8px)" }}
-      transition={{ duration: 0.5 }}
-      className="inline-block"
-    >
-      {word}
-    </motion.span>
-  );
-}
