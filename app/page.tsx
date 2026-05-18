@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedBackground } from "@/components/background";
 import { Hero } from "@/components/hero";
@@ -18,16 +18,20 @@ export default function Home() {
   const [markdown, setMarkdown] = useState("");
   const [input, setInput] = useState<GenerateInput | null>(null);
   const [error, setError] = useState("");
-  const formAreaRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollTop = () => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const start = () => {
+    scrollTop();
     setPhase("form");
-    requestAnimationFrame(() =>
-      formAreaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-    );
   };
 
   const runGeneration = async (data: GenerateInput) => {
+    scrollTop();
     setInput(data);
     setMarkdown("");
     setError("");
@@ -64,11 +68,11 @@ export default function Home() {
   };
 
   const reset = () => {
+    scrollTop();
     setMarkdown("");
     setInput(null);
     setError("");
     setPhase("landing");
-    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
   };
 
   const regenerate = () => {
@@ -132,7 +136,6 @@ export default function Home() {
           {phase === "form" && (
             <motion.div
               key="form"
-              ref={formAreaRef}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
@@ -200,7 +203,10 @@ export default function Home() {
                 <h2 className="text-xl font-bold mb-3">Something went wrong</h2>
                 <p className="text-sm text-[var(--color-text-muted)] mb-6">{error}</p>
                 <button
-                  onClick={() => setPhase("form")}
+                  onClick={() => {
+                    scrollTop();
+                    setPhase("form");
+                  }}
                   className="gradient-bg text-white font-semibold px-6 py-3 rounded-xl text-sm"
                 >
                   Try again
